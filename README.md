@@ -12,6 +12,12 @@ firewall-cmd --permanent --add-port=443/tcp
 # reload
 firewall-cmd --reload
   ```
+  
+### Trafic generator
+```sh
+while true; do curl -s http://127.0.0.1; done > /dev/null 2>/dev/null &
+```
+
 ## CentOS/8 Network tools:
 ### nmap
 ```sh
