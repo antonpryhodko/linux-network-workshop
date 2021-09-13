@@ -90,7 +90,9 @@ ip link set eth0 up
 ip addr show
 ip neigh show
 ```
-
+### ping
+### traceoute
+### mtr
 ## Sniffers
 ### tcpdump
 ```sh
