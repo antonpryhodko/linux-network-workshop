@@ -3,7 +3,14 @@
 ## Preparation:
 ### Install Apache WebServer on CentOS/8
   ```sh
-  yum install -y httpd
+
+yum install -y httpd epel-release mod_ssl
+
+# open port
+firewall-cmd --permanent --add-port=443/tcp
+
+# reload
+firewall-cmd --reload
   ```
 ## CentOS/8 Network tools:
 ### nmap
@@ -132,12 +139,6 @@ openssl pkcs12 -in certificate.p12 -noout -info
 ```
 ### Letsencrypt
 ```sh
-yum install -y epel-release mod_ssl
-# open port
-firewall-cmd --permanent --add-port=443/tcp
-
-# reload
-firewall-cmd --reload
 
 # install certbot
 yum install certbot python3-certbot-apache
@@ -145,11 +146,16 @@ yum install certbot python3-certbot-apache
 # generate Let’s Encrypt SSL
 certbot --apache -d example.com
 
+# renew
 certbot renew
 crontab -e
 # Then add this line:
 
 0 0 * * * /usr/bin/certbot renew > /dev/null 2>&1
+
+# OR
+
+echo "0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 ```
 
 https://www.ssllabs.com/ssltest/analyze.html?d=example.com
