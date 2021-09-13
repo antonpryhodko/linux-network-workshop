@@ -6,8 +6,9 @@
 
 yum install -y httpd epel-release mod_ssl
 
-# open port
+# open ports
 firewall-cmd --permanent --add-port=443/tcp
+firewall-cmd --permanent --add-port=80/tcp
 
 # reload
 firewall-cmd --reload
