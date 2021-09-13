@@ -91,7 +91,7 @@ ip addr show
 ip neigh show
 ```
 ### ping
-### traceoute
+### traceroute
 ### mtr
 ## Sniffers
 ### tcpdump
