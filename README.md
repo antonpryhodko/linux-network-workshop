@@ -79,7 +79,78 @@ ip neigh show
 
 ## Sniffers
 ### tcpdump
+```sh
+tcpdump -D
+tcpdump --list-interfaces
+tcpdump -i eth1
+tcpdump –n
+tcpdump -c 5
+tcpdump –tttt
+tcpdump -i eth0 -c 15 port 80
+tcpdump host 10.0.0.1
+tcpdump -i eth0 icmp
+tcpdump -n -i eth0 src 10.0.0.1 and dst port 80
+tcpdump -i eth0 not icmp
+tcpdump -i eth0 -c 15 -w dump.pcap
+tcpdump -i eth0 -c 15 -w dump.pcap
+tcpdump -c10 -i eth0 -n -A port 80
+tcpdump -c10 -i eth0 -n -X port 80
+```
 ### tshark
+```sh
+tshark -D
+tshark -i eth0
+tshark -i eth0 host 10.0.0.1
+tshark -i eth0 src host 10.0.0.1
+tshark -i eth0 dst host 10.0.0.1
+tshark -i eth0 src net 10.0.0.0/24
+tshark -i eth0 host 10.0.0.1 and port 80
+tshark -i eth0 -a duration:10 -w dump.pcap
+tshark 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<>2)) != 0)' -R 'http.request.method == "GET" || http.request.method == "HEAD"'
+tshark 'tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)' -R 'http.request.method == "GET" || http.request.method == "HEAD"'
+tshark tcp port 80 or tcp port 443 -V -R "http.request || http.response"
+tshark -Y http
+```
 ## Certificate
 ### Self-signed certificate
+Generate
+```sh 
+openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out certificate.pem
+```
+Review
+```sh 
+openssl x509 -text -noout -in certificate.pem
+```
+Combine your key and certificate in a PKCS#12 (P12) bundle:
+```sh 
+openssl pkcs12 -inkey key.pem -in certificate.pem -export -out certificate.p12
+```
+
+Validate your P2 file.
+```sh 
+openssl pkcs12 -in certificate.p12 -noout -info
+```
 ### Letsencrypt
+```sh
+yum install -y epel-release mod_ssl
+# open port
+firewall-cmd --permanent --add-port=443/tcp
+
+# reload
+firewall-cmd --reload
+
+# install certbot
+yum install certbot python3-certbot-apache
+
+# generate Let’s Encrypt SSL
+certbot --apache -d example.com
+
+certbot renew
+crontab -e
+# Then add this line:
+
+0 0 * * * /usr/bin/certbot renew > /dev/null 2>&1
+```
+
+https://www.ssllabs.com/ssltest/analyze.html?d=example.com
+
